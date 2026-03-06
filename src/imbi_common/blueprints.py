@@ -73,11 +73,6 @@ def _apply_blueprints[ModelType: pydantic.BaseModel](
 ) -> type[ModelType]:
     kwargs: dict[str, typing.Any] = {}
 
-    # Add all fields from the base model
-    for field_name, field_info in model.model_fields.items():
-        annotation = field_info.annotation
-        kwargs[field_name] = (annotation, field_info)
-
     # Add fields from blueprints
     for blueprint in blueprints:
         if blueprint.json_schema.properties:
@@ -118,12 +113,7 @@ def _apply_blueprints[ModelType: pydantic.BaseModel](
                 else:
                     kwargs[prop_name] = (field_type, default)
 
-    return typing.cast(
-        type[ModelType],
-        pydantic.create_model(
-            model.__name__, __config__=model.model_config, **kwargs
-        ),
-    )
+    return pydantic.create_model(model.__name__, __base__=model, **kwargs)
 
 
 async def get_model[ModelType: pydantic.BaseModel](

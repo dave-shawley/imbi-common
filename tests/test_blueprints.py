@@ -48,6 +48,18 @@ class GetModelTestCase(unittest.IsolatedAsyncioTestCase):
 
         self.mock_fetch_nodes.return_value = iterator()
 
+    async def test_model_is_subclass_of_input(self) -> None:
+        """Verify the returned model is a true subclass, not just cast."""
+        self._set_blueprints(
+            self._make_blueprint(
+                properties={'domain': {'type': 'string'}},
+            )
+        )
+
+        result_model = await blueprints.get_model(models.Environment)
+
+        self.assertTrue(issubclass(result_model, models.Environment))
+
     async def test_get_model_no_blueprints(self) -> None:
         """Test get_model with no blueprints returns base model."""
         self._set_blueprints()
