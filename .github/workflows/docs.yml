@@ -6,7 +6,9 @@ on:
       - main
     paths:
       - 'docs/**'
+      - 'justfile'
       - 'mkdocs.yml'
+      - 'pyproject.toml'
       - '.github/workflows/docs.yml'
   workflow_dispatch:
 
